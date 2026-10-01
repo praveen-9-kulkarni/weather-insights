@@ -3,10 +3,15 @@ package com.project.weather_insights.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.weather_insights.exception.UnknownCityException;
 import com.project.weather_insights.model.WeatherReading;
 import com.project.weather_insights.queue.WeatherJobQueue;
 import com.project.weather_insights.service.WeatherService;
@@ -24,20 +29,26 @@ public class WeatherController {
     }
 
     @GetMapping("/weather")
-    public CurrentWeather getCurrentWeather() {
+    public CurrentWeather getCurrentWeather(@RequestParam String city) {
 
-        return weatherService.getLatestReading();
+        return weatherService.getLatestReading(city);
     }
 
     @GetMapping("/weather/readings")
-    public List<WeatherReading> listReadings() {
+    public List<WeatherReading> listReadings(@RequestParam String city) {
 
-        return weatherService.listReadings();
+        return weatherService.listReadings(city);
     }
 
     @PostMapping("/weather/jobs")
-    public Map<String, String> scheduleJob() {
-        Long listSize = weatherJobQueue.enqueue("Bengaluru");
+    public Map<String, String> scheduleJob(@RequestParam String city) {
+        Long listSize = weatherJobQueue.enqueue(city);
         return Map.of("status", "enqueued", "size", listSize.toString());
+    }
+
+    @ExceptionHandler(UnknownCityException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleUnknownCityException(UnknownCityException ex) {
+        return Map.of("error", "City not found");
     }
 }

@@ -44,7 +44,7 @@ public class WeatherWorker implements ApplicationRunner {
 
             log.info("Picked up job for city={}", city);
             try {
-                weatherService.getCurrentWeather();
+                weatherService.getCurrentWeather(city);
                 log.info("Job for city={} completed", city);
             } catch (Exception e) {
                 log.error("Job for city={} failed", city, e);

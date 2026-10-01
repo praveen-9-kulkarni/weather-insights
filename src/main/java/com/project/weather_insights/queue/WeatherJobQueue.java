@@ -5,6 +5,9 @@ import java.time.Duration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.project.weather_insights.service.WeatherService;
+import com.project.weather_insights.service.WeatherService.City;
+
 @Component
 public class WeatherJobQueue {
 
@@ -16,7 +19,8 @@ public class WeatherJobQueue {
     }
 
     public Long enqueue(String city) {
-        return redis.opsForList().leftPush(QUEUE_KEY, city);
+        City cityData = WeatherService.resolveCityOrThrow(city);
+        return redis.opsForList().leftPush(QUEUE_KEY, cityData.name());
     }
 
     /**
