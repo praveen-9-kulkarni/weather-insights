@@ -20,8 +20,23 @@ public class WeatherJobQueue {
     }
 
     public Long enqueue(String city) {
-        City cityData = WeatherService.resolveCityOrThrow(city);
-        return redis.opsForList().leftPush(QUEUE_KEY, cityData.name());
+
+        return push(resolvedName(city));
+    }
+
+    public Long enqueue(String city, int attemptCount) {
+
+        return push(resolvedName(city) + ":" + attemptCount);
+    }
+
+    private String resolvedName(String city) {
+
+        return WeatherService.resolveCityOrThrow(city).name();
+    }
+
+    private Long push(String payload) {
+
+        return redis.opsForList().leftPush(QUEUE_KEY, payload);
     }
 
     /**
