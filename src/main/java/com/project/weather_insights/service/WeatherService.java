@@ -42,15 +42,22 @@ public class WeatherService {
     public CurrentWeather getCurrentWeather(String city) {
         
         City cityData = resolveCityOrThrow(city);
+        CurrentWeather weather = fetchCurrentWeather(cityData);
+        persistIfNewReading(weather);
+        return weather;
+    }
+
+    CurrentWeather fetchCurrentWeather(City city) {
         ParentResponse response = restClient.get()
-                        .uri(uriBuilder -> uriBuilder.queryParam("latitude", cityData.latitude()).queryParam("longitude", cityData.longitude()).queryParam("current", "temperature_2m,precipitation").build())
+                        .uri(uriBuilder -> uriBuilder.queryParam("latitude", city.latitude()).queryParam("longitude", city.longitude()).queryParam("current", "temperature_2m,precipitation").build())
                         .retrieve()
                         .body(ParentResponse.class);
+        return new CurrentWeather(city.name(), response.current().temperature_2m(), response.current().precipitation(), response.current().time().atZone(ZoneId.of("GMT")).toInstant());
+    }
 
-        CurrentWeather weather = new CurrentWeather(cityData.name(), response.current().temperature_2m(), response.current().precipitation(), response.current().time().atZone(ZoneId.of("GMT")).toInstant());
+    void persistIfNewReading(CurrentWeather weather) {
 
-        WeatherReading latestReading = readings.findFirstByCityOrderByObservedAtDesc(cityData.name());
-
+        WeatherReading latestReading = readings.findFirstByCityOrderByObservedAtDesc(weather.city());
         if (latestReading == null) {
             readings.save(
                 new WeatherReading(
@@ -74,8 +81,6 @@ public class WeatherService {
                 );
             }
         }
-
-        return weather;
     }
 
     public static City resolveCityOrThrow(String city) {
