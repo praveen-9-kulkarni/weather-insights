@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -105,5 +106,13 @@ public class WeatherService {
     public static List<String> getCities() {
     
         return CITIES.keySet().stream().toList();
+    }
+
+    /** Latest stored reading per catalog city (skips cities with no data yet). */
+    public List<WeatherReading> listLatestReadings() {
+        return getCities().stream()
+                .map(readings::findFirstByCityOrderByObservedAtDesc)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }
