@@ -6,7 +6,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.project.weather_insights.service.WeatherService;
-import com.project.weather_insights.service.WeatherService.City;
 
 @Component
 public class WeatherJobQueue {
@@ -44,11 +43,29 @@ public class WeatherJobQueue {
      * This is BRPOP: it blocks the calling thread, it does not poll.
      */
     public String dequeue(Duration timeout) {
+
         return redis.opsForList().rightPop(QUEUE_KEY, timeout);
     }
 
     public Long deadLetter(String city) {
 
         return redis.opsForList().leftPush(DEAD_LETTER_QUEUE_KEY, city);
+    }
+
+    /**
+     * Moves every dead-lettered job back onto the main queue.
+     * @return how many jobs were replayed (0 if the DLQ was empty)
+     */
+    public int replayAllDeadLetterQueueJobs() {
+        int count = 0;
+        while (true) {
+            String job = redis.opsForList().rightPop(DEAD_LETTER_QUEUE_KEY);
+            if (job == null) {
+                break;
+            }
+            enqueue(job);
+            count++;
+        }
+        return count;
     }
 }

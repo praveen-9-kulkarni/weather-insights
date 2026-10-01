@@ -41,4 +41,13 @@ public class WeatherController {
         Long listSize = weatherJobQueue.enqueue(city);
         return Map.of("status", "enqueued", "size", listSize.toString());
     }
+
+    @PostMapping("/weather/jobs/replay")
+    public Map<String, String> replayJobs() {
+        int count = weatherJobQueue.replayAllDeadLetterQueueJobs();
+        if (count == 0) {
+            return Map.of("status", "empty");
+        }
+        return Map.of("status", "replayed", "count", Integer.toString(count));
+    }
 }
