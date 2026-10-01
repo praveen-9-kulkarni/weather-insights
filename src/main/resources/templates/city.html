@@ -2,25 +2,26 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Weather Insights</title>
+    <title th:text="|${cityName} — Weather Insights|">City — Weather Insights</title>
     <style>
         body { font-family: system-ui, sans-serif; margin: 2rem; }
         table { border-collapse: collapse; width: 100%; max-width: 52rem; }
         th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
         th { background: #f4f4f4; }
         .muted { color: #666; }
+        a { color: #06c; }
     </style>
 </head>
 <body>
-    <h1>Weather Insights</h1>
-    <p class="muted">Latest reading per city (worker-computed Δ temp).</p>
+    <p><a th:href="@{/}">← All cities</a></p>
+    <h1 th:text="${cityName}">City</h1>
+    <p class="muted">Reading history (newest first), including worker-computed Δ temp.</p>
 
-    <p th:if="${readings.isEmpty()}" class="muted">No readings yet. Enqueue a job or wait for the scheduler.</p>
+    <p th:if="${readings.isEmpty()}" class="muted">No readings yet for this city.</p>
 
     <table th:if="${!readings.isEmpty()}">
         <thead>
             <tr>
-                <th>City</th>
                 <th>Temp (°C)</th>
                 <th>Δ Temp (°C)</th>
                 <th>Precip (mm)</th>
@@ -29,7 +30,6 @@
         </thead>
         <tbody>
             <tr th:each="r : ${readings}">
-                <td><a th:href="@{/cities/{c}(c=${r.city})}" th:text="${r.city}">Bengaluru</a></td>
                 <td th:text="${#numbers.formatDecimal(r.temperatureCelsius, 1, 1)}">0.0</td>
                 <td th:text="${r.temperatureDeltaCelsius != null ? #numbers.formatDecimal(r.temperatureDeltaCelsius, 1, 1) : '—'}">—</td>
                 <td th:text="${#numbers.formatDecimal(r.precipitationMillimetres, 1, 1)}">0.0</td>

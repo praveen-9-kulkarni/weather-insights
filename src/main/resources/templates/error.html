@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error — Weather Insights</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; }
+        .muted { color: #666; }
+        a { color: #06c; }
+    </style>
+</head>
+<body>
+    <p><a th:href="@{/}">← All cities</a></p>
+    <h1>Something went wrong</h1>
+    <p th:text="${message}">Error</p>
+    <p class="muted">Check the city name and try again.</p>
+</body>
+</html>
