@@ -48,6 +48,7 @@ public class WeatherWorker implements ApplicationRunner {
                 log.info("Job for city={} completed", city);
             } catch (Exception e) {
                 log.error("Job for city={} failed", city, e);
+                queue.deadLetter(city);
             }
         }
     }

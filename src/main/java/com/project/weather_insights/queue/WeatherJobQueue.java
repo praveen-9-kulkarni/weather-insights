@@ -13,6 +13,7 @@ public class WeatherJobQueue {
 
     private final StringRedisTemplate redis;
     private static final String QUEUE_KEY = "weather-jobs";
+    private static final String DEAD_LETTER_QUEUE_KEY = "weather-jobs-dead";
     
     public WeatherJobQueue(StringRedisTemplate redis) {
         this.redis = redis;
@@ -29,5 +30,10 @@ public class WeatherJobQueue {
      */
     public String dequeue(Duration timeout) {
         return redis.opsForList().rightPop(QUEUE_KEY, timeout);
+    }
+
+    public Long deadLetter(String city) {
+
+        return redis.opsForList().leftPush(DEAD_LETTER_QUEUE_KEY, city);
     }
 }
