@@ -48,15 +48,30 @@ public class WeatherService {
 
         CurrentWeather weather = new CurrentWeather(cityData.name(), response.current().temperature_2m(), response.current().precipitation(), response.current().time().atZone(ZoneId.of("GMT")).toInstant());
 
-        if (!readings.existsByCityAndObservedAt(weather.city(), weather.observedAt())) {
+        WeatherReading latestReading = readings.findFirstByCityOrderByObservedAtDesc(cityData.name());
+
+        if (latestReading == null) {
             readings.save(
                 new WeatherReading(
                     weather.city(),
                     weather.temperatureCelsius(),
+                    null,
                     weather.precipitationMillimetres(),
                     weather.observedAt()
                 )
             );
+        } else {
+            if (!latestReading.getObservedAt().equals(weather.observedAt())) {
+                readings.save(
+                    new WeatherReading(
+                        weather.city(),
+                        weather.temperatureCelsius(),
+                        weather.temperatureCelsius() - latestReading.getTemperatureCelsius(),
+                        weather.precipitationMillimetres(),
+                        weather.observedAt()
+                    )
+                );
+            }
         }
 
         return weather;

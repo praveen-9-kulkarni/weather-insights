@@ -30,15 +30,19 @@ public class WeatherReading {
     @Column(nullable = false)
     private double precipitationMillimetres;
 
+    @Column(nullable = true)
+    private Double temperatureDeltaCelsius;
+
     @Column(nullable = false)
     private Instant observedAt;
 
     protected WeatherReading() {
     }
 
-    public WeatherReading(String city, double temperatureCelsius, double precipitationMillimetres, Instant observedAt) {
+    public WeatherReading(String city, double temperatureCelsius, Double temperatureDeltaCelsius, double precipitationMillimetres, Instant observedAt) {
         this.city = city;
         this.temperatureCelsius = temperatureCelsius;
+        this.temperatureDeltaCelsius = temperatureDeltaCelsius;
         this.precipitationMillimetres = precipitationMillimetres;
         this.observedAt = observedAt;
     }
@@ -57,6 +61,10 @@ public class WeatherReading {
 
     public double getPrecipitationMillimetres() {
         return precipitationMillimetres;
+    }
+
+    public Double getTemperatureDeltaCelsius() {
+        return temperatureDeltaCelsius;
     }
 
     public Instant getObservedAt() {
