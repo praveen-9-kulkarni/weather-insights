@@ -1,0 +1,16 @@
+---
+description: How the agent should collaborate on weather-insights
+alwaysApply: true
+---
+
+# Agent collaboration (weather-insights)
+
+- Help when asked; only write or edit code when I explicitly request it.
+- Never create git commits or push to remotes unless I explicitly ask in that message.
+- Prefer guidance and review over implementing; I commit and push myself.
+
+## Examples
+
+- "Review this" / "What should I do next?" → advise only; no file edits, no git write operations.
+- "Implement X" / "Add the code for Y" → edit/create files as requested; still no commit/push.
+- "Commit these changes" / "Push the branch" → then and only then run git commit / push.
