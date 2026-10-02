@@ -9,10 +9,58 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weather -d weather"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   redis:
     image: redis:7
     ports:
       - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    image: weather-insights:local
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/weather
+      SPRING_DATASOURCE_USERNAME: weather
+      SPRING_DATASOURCE_PASSWORD: weather
+      SPRING_DATA_REDIS_HOST: redis
+      WEATHER_ADMIN_TOKEN: dev-admin-token
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build: .
+    image: weather-insights:local
+    environment:
+      SPRING_PROFILES_ACTIVE: worker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/weather
+      SPRING_DATASOURCE_USERNAME: weather
+      SPRING_DATASOURCE_PASSWORD: weather
+      SPRING_DATA_REDIS_HOST: redis
+      WEATHER_ADMIN_TOKEN: dev-admin-token
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+    restart: unless-stopped
 
 volumes:
   postgres_data:
