@@ -9,8 +9,22 @@ alwaysApply: true
 - Never create git commits or push to remotes unless I explicitly ask in that message.
 - Prefer guidance and review over implementing; I commit and push myself.
 
+## Feature branches (git save points)
+
+When I ask to **stage**, **commit**, or **put this on a branch** (not for ordinary “Implement X”):
+
+1. If current branch is `main`/`master` (or I ask for a new branch): propose a name `feature/<short-kebab>` from the change; use my name if I give one.
+2. Create and check out that branch (`git switch -c …`), then stage the intended files.
+3. Commit only if I also asked to commit; push only if I also asked to push.
+4. Never commit or stage onto `main`/`master`.
+5. If already on a non-main feature branch and I did not ask for a *new* branch, stay on it.
+
+Do not create a feature branch for implement/review/advise-only requests.
+
 ## Examples
 
 - "Review this" / "What should I do next?" → advise only; no file edits, no git write operations.
-- "Implement X" / "Add the code for Y" → edit/create files as requested; still no commit/push.
-- "Commit these changes" / "Push the branch" → then and only then run git commit / push.
+- "Implement X" / "Add the code for Y" → edit/create files as requested; still no branch/commit/push.
+- "Put these changes on a feature branch" → create/switch branch + stage (no commit unless also asked).
+- "Commit these changes" → feature-branch steps above, then commit (no push).
+- "Push the branch" → then and only then push.

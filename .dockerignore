@@ -1,0 +1,12 @@
+.git
+.github
+.cursor
+.gradle
+build
+.idea
+*.iml
+*.md
+.gitignore
+compose.yaml
+.dockerignore
+Dockerfile
