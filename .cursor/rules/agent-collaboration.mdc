@@ -21,6 +21,8 @@ When I ask to **stage**, **commit**, or **put this on a branch** (not for ordina
 
 Do not create a feature branch for implement/review/advise-only requests.
 
+For the full path (suggest branch + commit message + PR summary/test plan → my approval → branch/commit/push/PR), use the **`/ship`** command and follow it strictly (suggest-only until I say Go).
+
 ## Examples
 
 - "Review this" / "What should I do next?" → advise only; no file edits, no git write operations.
@@ -28,3 +30,4 @@ Do not create a feature branch for implement/review/advise-only requests.
 - "Put these changes on a feature branch" → create/switch branch + stage (no commit unless also asked).
 - "Commit these changes" → feature-branch steps above, then commit (no push).
 - "Push the branch" → then and only then push.
+- `/ship` → suggest ship package; wait for my edits/Go; then branch, commit, push, open PR.
