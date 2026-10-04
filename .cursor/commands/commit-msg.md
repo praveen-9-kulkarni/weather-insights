@@ -23,3 +23,4 @@ Shorter:
 
 - Do not run `git add`, `git commit`, or `git push`.
 - Do not invent changes that are not in the diff.
+- Do not mention Cursor, Copilot, or “AI” in the message.

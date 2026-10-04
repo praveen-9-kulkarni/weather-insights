@@ -67,3 +67,4 @@ If anything is still ambiguous, ask once (max a few questions), then wait again.
 - Never commit onto `main`/`master`.
 - If there is nothing to ship (clean tree and no commits ahead of base), say so and stop.
 - Do not amend commits unless the user explicitly asks and amend rules allow it.
+- Do not put “Built with Cursor” or similar in commit or PR text.
